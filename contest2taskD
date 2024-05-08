@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int KMx = 300000;
+vector<vector<int> > gxt(KMx), gtx(KMx);
+vector<int> top_sort;
+int ans[KMx];
+bool usd[KMx];
+bool usx[KMx];
+void Dfs(int vxt) {
+  usd[vxt] = true;
+  int txz = gxt[vxt].size();
+  for (int i = 0; i < txz; i++) {
+    if (!usd[gxt[vxt][i]]) {
+      Dfs(gxt[vxt][i]);
+    }
+  }
+  top_sort.push_back(vxt);
+}
+void Dfsx(int vxt, vector<int>& vxz) {
+  vxz.push_back(vxt);
+  usx[vxt] = true;
+  int txz = gtx[vxt].size();
+  for (int i = 0; i < txz; i++) {
+    if (!usx[gtx[vxt][i]]) {
+      Dfsx(gtx[vxt][i], vxz);
+    }
+  }
+}
+int main() {
+  ios::sync_with_stdio(false);
+  int nnn;
+  int mmm;
+  cin >> nnn >> mmm;
+  for (int i = 0; i < mmm; i++) {
+    int xxx;
+    int yyy;
+    cin >> xxx >> yyy;
+    gxt[xxx].push_back(yyy);
+    gtx[yyy].push_back(xxx);
+  }
+  for (int i = 1; i <= nnn; i++) {
+    if (!usd[i]) {
+      Dfs(i);
+    }
+  }
+  int txz = 0;
+  for (int i = (nnn - 1); i >= 0; i--) {
+    vector<int> vxz;
+    if (!usx[top_sort[i]]) {
+      Dfsx(top_sort[i], vxz);
+      txz++;
+    }
+    int ugh = vxz.size();
+    for (int j = 0; j < ugh; j++) {
+      ans[vxz[j] - 1] = txz;
+    }
+  }
+  cout << txz << endl;
+  for (int i = 0; i < nnn; i++) {
+    cout << ans[i] << ' ';
+  }
+}
